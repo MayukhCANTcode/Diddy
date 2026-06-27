@@ -1,0 +1,79 @@
+\documentclass[journal,10pt]{IEEEtran}
+
+% Packages
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{cite}
+
+\begin{document}
+
+\title{Deforestation Detection using Deep Learning and Multispectral Sentinel-2 Satellite Imagery}
+
+\author{Your Name, \IEEEmembership{Member, IEEE}
+\thanks{Manuscript received June 27, 2026. Corresponding author: Your Name (email: author@university.edu).}}
+
+\markboth{IEEE Transactions on Geoscience and Remote Sensing,~Vol.~XX, No.~X, June~2026}%
+{Your Name \MakeLowercase{\textit{et al.}}: Deforestation Detection using Deep Learning on Sentinel-2 Imagery}
+
+\maketitle
+
+\begin{abstract}
+Rapid deforestation poses severe threats to global ecosystems, biodiversity, and carbon sequestration cycles. In this study, we propose a scalable deep learning framework for precise forest cover segmentation and change detection. Leveraging multispectral Sentinel-2 satellite bands (RGB and Near-Infrared), we implement a modified convolutional segmentation network (U-Net) benchmarked against the EuroSAT land cover dataset. Furthermore, we employ a bi-temporal change detection architecture validated against Global Forest Watch (GFW) historical alerts to detect tree cover loss events. Our approach yields high Intersection-over-Union (IoU) scores, demonstrating the viability of automated satellite telemetry for real-time ecological monitoring.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Deforestation detection, deep learning, Sentinel-2, EuroSAT, Global Forest Watch, change detection, semantic segmentation.
+\end{IEEEkeywords}
+
+\section{Introduction}
+\IEEEPARstart{F}{orests} cover approximately 31\% of the global land area, acting as critical carbon sinks and hosting major portions of terrestrial biodiversity. However, anthropogenic pressures, commercial logging, and agricultural expansion have accelerated canopy loss worldwide...
+
+\section{Related Work}
+\subsection{Land Cover Classification with EuroSAT}
+Land cover classification benchmarks have historically progressed from coarse resolution sensors to high-resolution multispectral imagery. The EuroSAT dataset provides...
+
+\subsection{Deep Learning for Satellite Imagery Segmentation}
+Semantic segmentation models like U-Net, DeepLabv3+, and Feature Pyramid Networks (FPNs) have become standard for pixel-wise mapping of forest boundaries...
+
+\section{Methodology}
+Our end-to-end framework consists of three main components: (1) multi-spectral patch generation, (2) semantic forest cover segmentation, and (3) bi-temporal deforestation change detection.
+
+\subsection{Multispectral Image Preprocessing}
+We utilize the Blue (B02), Green (B03), Red (B04), and Near-Infrared (B08) bands of Sentinel-2 satellite imagery. High-resolution tiles are partitioned into local patches of dimension $P \times P$:
+\begin{equation}
+I \in \mathbb{R}^{P \times P \times 4}
+\end{equation}
+
+\subsection{Forest Segmentation Model}
+A U-Net encoder-decoder network is trained to classify each pixel as either forest or non-forest...
+
+\subsection{Bi-Temporal Change Detection}
+To detect deforestation events, two co-registered image patches $I_{t1}$ and $I_{t2}$ taken at separate dates are passed through our change detection module...
+
+\section{Experiments and Evaluation}
+\subsection{Datasets and Labels}
+- \textbf{EuroSAT:} Pre-training benchmark.
+- \textbf{Sentinel-2:} Input satellite imagery source.
+- \textbf{Global Forest Watch (GFW):} Deforestation validation masks.
+
+\subsection{Evaluation Metrics}
+To evaluate segmentation fidelity, we report the Intersection-over-Union (IoU) and F1-score (Dice coefficient):
+\begin{equation}
+\text{IoU} = \frac{\text{TP}}{\text{TP} + \text{FP} + \text{FN}}
+\end{equation}
+
+\section{Results and Discussion}
+% Quantitative comparison tables and confusion matrices will go here
+
+\section{Conclusion}
+This paper presented an integrated machine learning workflow for remote sensing-based forest loss assessment...
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

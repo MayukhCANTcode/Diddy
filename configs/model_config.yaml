@@ -1,0 +1,25 @@
+# Model Configuration for Deforestation Detection
+
+# Training Hyperparameters
+training:
+  batch_size: 32
+  num_workers: 4
+  epochs: 50
+  learning_rate: 0.0001
+  weight_decay: 0.00001
+  optimizer: "adamw"
+  lr_scheduler: "cosine"
+
+# Segmentation Model Architecture (e.g., for land cover prediction / change detection)
+segmentation_model:
+  architecture: "unet"  # choices: [unet, deeplabv3plus, fpn]
+  encoder: "resnet34"   # pre-trained backbone
+  encoder_weights: "imagenet"
+  in_channels: 4        # RGB + NIR (Red, Green, Blue, Near-Infrared)
+  num_classes: 2        # Deforested vs. Intact Forest
+
+# Classifier Model Architecture (e.g., for EuroSAT benchmark)
+classifier_model:
+  architecture: "resnet50"
+  in_channels: 13       # Sentinel-2 full bands
+  num_classes: 10       # 10 EuroSAT classes

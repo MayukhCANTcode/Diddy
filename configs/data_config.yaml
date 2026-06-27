@@ -1,0 +1,29 @@
+# Data Configuration for Deforestation Detection
+
+# Paths to dataset root directories
+paths:
+  eurosat_dir: "data/raw/eurosat"
+  sentinel2_dir: "data/raw/sentinel2"
+  global_forest_watch_dir: "data/raw/global_forest_watch"
+  processed_dir: "data/processed"
+  metadata_dir: "data/metadata"
+
+# Sentinel-2 Imagery Settings
+sentinel2:
+  # Channels to use: B02 (Blue), B03 (Green), B04 (Red), B08 (NIR) are standard for forest detection
+  bands: ["B02", "B03", "B04", "B08"]
+  # Sentinel-2 native resolution for selected bands is 10 meters/pixel
+  resolution_meters: 10
+  
+# Patch Generation Parameters
+patch_generation:
+  patch_size: 256  # size in pixels (256x256)
+  stride: 128      # overlap of 50%
+  min_valid_pixels_pct: 0.9  # ignore patches with high cloud cover or missing data
+  
+# Dataset Split Ratios
+splits:
+  train_ratio: 0.70
+  val_ratio: 0.15
+  test_ratio: 0.15
+  random_seed: 42
