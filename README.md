@@ -1,119 +1,374 @@
-# Deforestation Detection using Deep Learning
+# 🌍 Deforestation Detection using Deep Learning
 
-An industry-level, research-oriented deep learning and computer vision framework for detecting forest cover changes and deforestation events using multispectral satellite telemetry.
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red)
+![Rasterio](https://img.shields.io/badge/Rasterio-GIS-green)
+![OpenCV](https://img.shields.io/badge/OpenCV-ComputerVision-orange)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-This repository is designed to bridge the gap between experimental prototyping (Jupyter notebooks), production-grade engineering (modular library and CLI), and scientific publishing (LaTeX manuscripts).
+# 🌍 Deforestation Detection using Deep Learning and Sentinel-2
+
+An end-to-end deep learning pipeline that detects forest loss from multi-temporal Sentinel-2 satellite imagery using Transfer Learning with ResNet50.
+
+The project classifies satellite image patches into land-cover categories, generates land-cover maps for different years, and identifies regions where forests have disappeared over time.
 
 ---
 
-## 📂 Repository Structure
+## 🚀 Features
 
-Below is the directory tree of the repository:
+- End-to-end remote sensing pipeline
+- Sentinel-2 satellite image preprocessing
+- Automatic patch generation
+- Transfer Learning using ResNet50
+- EuroSAT land-cover classification
+- Land-cover map generation
+- Forest loss detection
+- Change detection between years
+- Interactive visualizations
+- Automated project dashboard
 
-```text
-Deforestation-Detection/
-├── .gitignore                  # Excludes large binaries (datasets, weights, latex temp files)
-├── README.md                   # Project index, system architecture, and guide
-├── requirements.txt            # Python packages (PyTorch, Rasterio, GeoPandas, etc.)
-│
-├── configs/                    # Experiment parameters (decoupled from code)
-│   ├── data_config.yaml        # Bands, resolutions, paths, and patch parameters
-│   └── model_config.yaml       # Hyperparameters, architectures, encoders, optimizer settings
-│
-├── data/                       # Dataset directories (ignored by git except placeholders)
-│   ├── raw/                    # Unmodified original datasets
-│   │   ├── eurosat/            # Sentinel-2 benchmark for land use classification
-│   │   ├── sentinel2/          # Multi-temporal Sentinel-2 GeoTIFF tiles
-│   │   └── global_forest_watch/# Vector/raster deforestation alerts and validation masks
-│   ├── processed/              # Cropped 256x256 image patches and paired label masks
-│   └── metadata/               # CSV lists indexing file splits and metadata labels
-│
-├── src/                        # Main modular library code
-│   ├── __init__.py             # Exposes package metadata
-│   ├── data/                   # Data pipeline loaders
-│   │   ├── __init__.py
-│   │   ├── dataset.py          # PyTorch Datasets for Sentinel-2, EuroSAT, and GFW
-│   │   └── patch_gen.py        # Raster slicing utility using windowed cropping
-│   ├── models/                 # Deep learning networks
-│   │   ├── __init__.py
-│   │   └── unet.py             # U-Net semantic segmentation network
-│   ├── change_detection/       # Bi-temporal change processing
-│   │   ├── __init__.py
-│   │   └── detector.py         # Siamese or concatenation network for temporal difference maps
-│   ├── pipelines/              # Orchestration entry points
-│   │   ├── __init__.py
-│   │   ├── train.py            # Train script entry point
-│   │   └── predict.py          # Inference script entry point
-│   └── utils/                  # Helper utilities
-│       ├── __init__.py
-│       ├── metrics.py          # Paper metrics (IoU, F1-Score, Confusion Matrix)
-│       └── visualization.py    # Matplotlib RGB overlays and side-by-side plots
-│
-├── notebooks/                  # Interactive experimentation
-│   ├── 01_data_exploration.ipynb    # Visualizes satellite bands & metadata
-│   ├── 02_patch_generation_demo.ipynb# Prototyping tiling logic
-│   └── 03_model_evaluation.ipynb    # Runs prediction overlays & inspects errors
-│
-├── models/                     # Checkpoints and serializations (ignored by git)
-│   ├── checkpoints/            # Epoch-wise training checkpoints
-│   └── final/                  # Final production weights ready for inference
-│
-├── outputs/                    # Output artifacts for publication
-│   ├── figures/                # Matplotlib graphs, qualitative maps, and charts
-│   └── predictions/            # Raw GeoTIFF inference outputs and change maps
-│
-├── paper/                      # LaTeX publication resources
-│   ├── figures/                # Diagrams and qualitative maps used in the paper
-│   ├── sections/               # Modular LaTeX section files
-│   ├── main.tex                # LaTeX master manuscript (IEEE TGRS format)
-│   └── references.bib          # BibTeX citation records
-│
-└── tests/                      # Unit testing framework
-    ├── test_data.py            # Validates shape matching, transforms, and nodata filters
-    ├── test_models.py          # Validates forward passes, channel alignments, and shapes
-    └── test_utils.py           # Validates metric outputs (IoU, Precision, Recall)
+---
+
+# Project Pipeline
+
+```
+Sentinel-2 Images
+        │
+        ▼
+Preprocessing
+(RGB Extraction)
+        │
+        ▼
+Patch Generation
+(64×64)
+        │
+        ▼
+Image Transforms
+        │
+        ▼
+ResNet50 (Transfer Learning)
+        │
+        ▼
+Patch Classification
+        │
+        ▼
+Land Cover Maps
+        │
+        ▼
+2018 vs 2024 Comparison
+        │
+        ▼
+Forest Loss Detection
+        │
+        ▼
+Statistics + Visualizations
 ```
 
 ---
 
-## 📖 Component Explanations
+# Folder Structure
 
-### 1. Configuration (`configs/`)
-- **`data_config.yaml`**: Outlines spatial patch constraints (e.g. `patch_size: 256`, `stride: 128`), Sentinel-2 channel selection (`B02`, `B03`, `B04`, `B08`), and random seed splits.
-- **`model_config.yaml`**: Controls training variables (learning rate, optimizer, batch size) and network settings (backbone encoders, segmentation classes), making execution files general and flexible.
+```
+Deforestation-Detection/
 
-### 2. Isolated Datasets (`data/`)
-Decoupling datasets into `raw/` and `processed/` is a core ML pipeline best practice:
-- **`data/raw/`**: Holds unmodified satellite tiles and GFW shapefiles. Never modify files in this directory; they represent your gold-standard ground truth.
-- **`data/processed/`**: Holds cropped, cleaned, and split image-label tensor pairs generated by the patch slicing code. Separating this speeds up training since reading small patches is significantly faster than querying massive GeoTIFF tiles in real-time.
-
-### 3. Modular Library (`src/`)
-Rather than placing script logic in notebooks, all core code is written as a modular, importable Python package:
-- **`data/dataset.py` & `data/patch_gen.py`**: Handle remote sensing IO using `rasterio` and generate tensor arrays.
-- **`models/unet.py`**: Model building blocks.
-- **`change_detection/detector.py`**: Logic for comparing images between two dates.
-- **`utils/metrics.py` & `utils/visualization.py`**: Shared computation of statistics and visual overlays.
-
-### 4. Jupyter Notebooks (`notebooks/`)
-Notebooks are restricted to exploratory analysis, exploratory visualization, and post-hoc error analysis. Any reusable code blocks (e.g., loading data or setting up models) are imported from `src/` to prevent copy-paste synchronization errors.
-
-### 5. Academic Paper Drafts (`paper/`)
-Houses LaTeX source code (`main.tex`, `references.bib`). Putting the writing pipeline in the codebase allows you to directly script data tables, loss plots, and prediction figures from the `outputs/` folder directly into the LaTeX document compilation flow.
+│
+├── data/
+│   ├── raw/
+│   ├── processed/
+│   ├── patches/
+│   ├── metadata/
+│   └── predictions/
+│
+├── models/
+│   └── checkpoints/
+│       └── best_model.pth
+│
+├── outputs/
+│
+├── notebooks/
+│
+├── src/
+│   ├── preprocess_sentinel.py
+│   ├── generate_patches.py
+│   ├── dataset.py
+│   ├── dataloader.py
+│   ├── transforms.py
+│   ├── model.py
+│   ├── train.py
+│   ├── run_inference.py
+│   ├── generate_landcover.py
+│   ├── detect_deforestation.py
+│   ├── create_dashboard.py
+│   └── utils.py
+│
+├── requirements.txt
+└── README.md
+```
 
 ---
 
-## 📈 Scalability and Professional Suitability
+# Dataset
 
-This architecture is tailored to make your research portfolio-ready and publishable for several reasons:
+## EuroSAT
 
-1. **Clean Code & Git History (No Large Binaries)**
-   By ignoring raw data (`data/raw/*`), processed tensors (`data/processed/*`), and training weights (`models/**/*.pth`), the repository remains lightweight (<10MB). Collaborators can clone it instantly, download data separately, and run scripts without bloating Git storage.
-   
-2. **Notebook-to-Script Transition**
-   By putting the core codebase in `src/`, notebooks remain simple visualization wrappers. This shows employers and reviewers that you write clean, production-ready, testable python files rather than relying solely on monolithic, un-testable notebook files.
-   
-3. **Decoupled Configuration**
-   Separating hyperparameters and filesystem paths from the python code ensures you can run different experiments (e.g. U-Net vs DeepLabv3+, or RGB vs RGB+NIR bands) simply by passing different configuration files, without modifying a single line of training code.
-   
-4. **Co-located Code and Publication Source**
-   Co-locating your paper and source code means that figures generated inside `outputs/figures/` can be symlinked or referenced directly by `paper/main.tex`. When you update your model and regenerate plots, your LaTeX paper automatically updates with the latest results.
+- 27,000 Sentinel-2 images
+- 10 land-cover classes
+
+Classes:
+
+- AnnualCrop
+- Forest
+- HerbaceousVegetation
+- Highway
+- Industrial
+- Pasture
+- PermanentCrop
+- Residential
+- River
+- SeaLake
+
+---
+
+# Model
+
+Transfer Learning using
+
+```
+ResNet50
+```
+
+Pretrained on
+
+```
+ImageNet
+```
+
+Only the final fully-connected layer is retrained.
+
+---
+
+# Data Preprocessing
+
+Each Sentinel image undergoes
+
+- RGB extraction
+- Patch generation
+- Resize (224×224)
+- Normalization
+- Data augmentation
+
+Training augmentation includes
+
+- Horizontal Flip
+- Vertical Flip
+
+---
+
+# Training
+
+Loss Function
+
+```
+CrossEntropyLoss
+```
+
+Optimizer
+
+```
+Adam
+```
+
+Learning Rate
+
+```
+0.001
+```
+
+Epochs
+
+```
+10
+```
+
+---
+
+# Results
+
+| Metric                 | Value  |
+| ---------------------- | ------ |
+| Validation Accuracy    | 94%    |
+| Test Accuracy          | 94.33% |
+| Forest Patches (2018)  | 15,088 |
+| Forest Loss            | 2,923  |
+| Forest Loss Percentage | 19.37% |
+
+---
+
+# Generated Outputs
+
+The pipeline automatically produces
+
+- Land Cover Maps
+- Prediction CSVs
+- Forest Loss Mask
+- Forest Loss Overlay
+- Deforestation Map
+- Transition Matrix
+- Change Statistics
+- Final Dashboard
+
+---
+
+# Sample Results
+
+## Final Dashboard
+
+![Dashboard](outputs/final_dashboard.png)
+
+---
+
+## Forest Loss Overlay
+
+![Overlay](outputs/forest_loss_overlay.png)
+
+---
+
+## Deforestation Map
+
+![Loss](outputs/deforestation_map.png)
+
+---
+
+## Land Cover Comparison
+
+![Comparison](outputs/comparison.png)
+
+---
+
+## Forest Loss Statistics
+
+![Pie](outputs/forest_loss_pie.png)
+
+---
+
+## Transition Analysis
+
+![Bar](outputs/transition_bar_chart.png)
+
+---
+
+# Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/MayukhCANTcode/Deforestation-Detection.git
+```
+
+Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+# Usage
+
+### 1. Preprocess Sentinel Images
+
+```bash
+python src/preprocess_sentinel.py
+```
+
+---
+
+### 2. Generate Image Patches
+
+```bash
+python src/generate_patches.py
+```
+
+---
+
+### 3. Train the Model
+
+```bash
+python src/train.py
+```
+
+---
+
+### 4. Run Inference
+
+```bash
+python src/run_inference.py
+```
+
+---
+
+### 5. Generate Land Cover Maps
+
+```bash
+python src/generate_landcover.py
+```
+
+---
+
+### 6. Detect Forest Loss
+
+```bash
+python src/detect_deforestation.py
+```
+
+---
+
+### 7. Create Final Dashboard
+
+```bash
+python src/create_dashboard.py
+```
+
+---
+
+# Technologies Used
+
+- Python
+- PyTorch
+- Torchvision
+- Rasterio
+- NumPy
+- Pandas
+- OpenCV
+- Matplotlib
+- PIL
+- Sentinel-2
+- EuroSAT
+
+---
+
+# Future Improvements
+
+- Semantic segmentation using U-Net
+- Vision Transformers
+- Temporal Attention Networks
+- Multi-spectral Sentinel bands
+- Cloud deployment
+- Interactive web dashboard
+- Near real-time monitoring
+
+---
+
+# Author
+
+**Mayukh Das**
+
+Electronics & Instrumentation Engineering
+
+National Institute of Technology Silchar
+
+---
+
+# License
+
+This project is released under the MIT License.

@@ -1,69 +1,37 @@
-# Python files
+# Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+*.pyc
+*.pyo
 
-# Jupyter Notebooks
-.ipynb_checkpoints
-*/.ipynb_checkpoints/*
-
-# Virtual Environments
+# Virtual Environment
 venv/
-.venv/
-env/
 .env
-.env.local
-.env.production
-.env.development
-.env.staging
 
-# Remote Sensing & Dataset binaries (Ignore large satellite datasets)
-data/raw/*
-!data/raw/.gitkeep
-data/processed/*
-!data/processed/.gitkeep
+# Model checkpoints
+*.pth
 
-# Models & weights (Ignore large saved checkpoints/weights)
-models/**/*.pth
-models/**/*.pt
-models/**/*.ckpt
-models/**/*.h5
-!models/checkpoints/.gitkeep
-!models/final/.gitkeep
+# Jupyter
+.ipynb_checkpoints/
 
-# IDE / System
+# VS Code
 .vscode/
-.idea/
-.DS_Store
-Thumbs.db
 
-# LaTeX compilation auxiliary files (paper folder)
-paper/*.aux
-paper/*.log
-paper/*.out
-paper/*.toc
-paper/*.synctex.gz
-paper/*.pdf
-paper/*.blg
-paper/*.bbl
-paper/*.fdb_latexmk
-paper/*.fls
+# Large datasets
+data/raw/
+data/processed/
+data/patches/
+
+# Temporary files
+*.log
+*.tmp
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Large GIS files
+data/gfw/
+
+# Large outputs
+outputs/forest_loss_overlay.png
+*.tif
